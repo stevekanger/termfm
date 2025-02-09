@@ -16,15 +16,14 @@ def create_args():
     parser = argparse.ArgumentParser(
         description="TermFm - A terminal based file manager"
     )
-    # parser.add_argument("--station", type=str, help="Radio station URL")
-    # parser.add_argument("--volume", type=int, help="Set volume level (0-100)", default=50)
+    # parser.add_argument("-arg1", type=str, help="Description for arg")
     args = parser.parse_args()
 
     return args
 
 
 def debug(*items):
-    logFile = "/mnt/Storage/Development/Projects/termfm/debug.log"
+    logFile = os.path.join(os.getcwd(), "debug.log")
     frame = inspect.currentframe()
 
     if frame and frame.f_back:
@@ -35,11 +34,41 @@ def debug(*items):
         filename, linenumber = "Unknown", "Unknown"
 
     with open(logFile, "a") as debugFile:
-        debugFile.write(f"[{filename}:{linenumber}]: ")
+        debugFile.write(f"[{filename}:{linenumber}]:")
         if debugFile:
             for item in items:
-                if isinstance(item, (dict, list, tuple)):
-                    json.dump(item, debugFile, indent=4)
-                else:
-                    debugFile.write(f"{item} ")
+                debugFile.write(" ")
+                json.dump(log_item_serialize(item), debugFile, indent=4)
         debugFile.write("\n")
+
+
+def log_item_serialize(obj, seen=None):
+    if seen is None:
+        seen = set()  # Prevent infinite recursion on cyclic references
+
+    if isinstance(obj, (int, float, str, bool, type(None))):
+        return obj
+    if isinstance(obj, (list, dict)):
+        return obj
+    if hasattr(obj, "__dict__") or hasattr(obj, "__class__"):
+        if id(obj) in seen:
+            return f"<Circular Reference: {obj.__class__.__name__}>"
+        seen.add(id(obj))
+
+        return {
+            "class_name": obj.__class__.__name__,
+            "attributes": {
+                key: log_item_serialize(value, seen)  # Recursively serialize attributes
+                for key, value in {
+                    **getattr(obj, "__dict__", {}),
+                    **vars(obj.__class__),
+                }.items()
+                if not callable(value) and not key.startswith("__")
+            },
+            "methods": [
+                method
+                for method in dir(obj)
+                if callable(getattr(obj, method)) and not method.startswith("__")
+            ],
+        }
+    return str(obj)

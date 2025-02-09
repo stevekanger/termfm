@@ -33,6 +33,8 @@ def panel_mode(keycode: int, app: App) -> None:
         app.rpanel.resize()
         app.statusline.resize()
         app.cmdline.resize()
+    elif keycode == 103:
+        pass
     elif keycode == curses.KEY_MOUSE:
         mouse_event = curses.getmouse()
         _, x, y, _, bstate = mouse_event
