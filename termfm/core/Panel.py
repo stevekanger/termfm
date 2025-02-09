@@ -4,7 +4,7 @@ import subprocess
 from typing import List
 from pathlib import Path
 
-from termfm.core.ui import create_curses_win
+from termfm.core.ui import create_curses_win, create_ui_map
 from termfm.types import (
     PanelHistoryState,
     PanelHistory,
@@ -32,6 +32,10 @@ class Panel:
 
     def is_active(self):
         return self.app.active_panel == self
+
+    def resize(self):
+        self.win = create_curses_win(self.app.stdscr, self.id)
+        self.render()
 
     def render(self):
         self.win.clear()
@@ -95,7 +99,7 @@ class Panel:
     def decrease_current_idx(self):
         self.current_idx = max(0, self.current_idx - 1)
 
-    def increase_curent_idx(self):
+    def increase_current_idx(self):
         self.current_idx = min(self.items_len - 1, self.current_idx + 1)
 
     def get_items(self) -> PanelItems:

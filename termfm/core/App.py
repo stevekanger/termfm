@@ -1,6 +1,5 @@
 import curses
 
-from termfm.core.utils import debug
 from termfm.types import ModeTypes
 from termfm.core.Panel import Panel
 from termfm.core.Statusline import Statusline

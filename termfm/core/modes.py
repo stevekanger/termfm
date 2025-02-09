@@ -15,7 +15,7 @@ class ModeMap(TypedDict):
 
 def panel_mode(keycode: int, app: App) -> None:
     if keycode == 106:
-        app.active_panel.increase_curent_idx()
+        app.active_panel.increase_current_idx()
     elif keycode == 107:
         app.active_panel.decrease_current_idx()
     elif keycode == 9:
@@ -27,19 +27,29 @@ def panel_mode(keycode: int, app: App) -> None:
     elif keycode == 113:
         app.exit_code = 1
     elif keycode == curses.KEY_RESIZE:
-        pass
-
+        app.stdscr.clear()
+        app.stdscr.refresh()
+        app.lpanel.resize()
+        app.rpanel.resize()
+        app.statusline.resize()
+        app.cmdline.resize()
     elif keycode == curses.KEY_MOUSE:
-        _, x, y, _, _ = curses.getmouse()
+        mouse_event = curses.getmouse()
+        _, x, y, _, bstate = mouse_event
 
-        # debug(
-        #     curses.COLORS,
-        #     x,
-        #     y,
-        #     curses.BUTTON1_CLICKED,
-        #     curses.BUTTON2_CLICKED,
-        #     curses.BUTTON3_CLICKED,
-        # )
+        if bstate & curses.BUTTON4_PRESSED:
+            app.active_panel.decrease_current_idx()
+        elif bstate & curses.BUTTON5_PRESSED:
+            app.active_panel.increase_current_idx()
+        elif bstate & curses.BUTTON1_PRESSED:
+            debug(
+                curses.COLORS,
+                x,
+                y,
+                curses.BUTTON1_CLICKED,
+                curses.BUTTON2_CLICKED,
+                curses.BUTTON3_CLICKED,
+            )
 
     app.lpanel.render()
     app.rpanel.render()
