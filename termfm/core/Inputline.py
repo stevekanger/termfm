@@ -28,15 +28,26 @@ class Inputline:
         if self.app.mode != "cmd":
             self.clear()
         else:
-            self.win.addstr(0, 0, ":")
-            for i in range(len(self.input)):
-                if i + 1 == self.cursor_pos:
-                    self.win.addstr(0, i + 1, self.input[i], color_pair("cursor"))
-                else:
-                    self.win.addstr(0, i + 1, self.input[i])
+            start_range: int = 0
+            max_width = self.input_max_width()
+            input_len = len(self.input)
 
-            if self.cursor_pos > len(self.input):
-                self.win.addstr(0, len(self.input) + 1, " ", color_pair("cursor"))
+            if input_len > max_width:
+                start_range = input_len - max_width
+
+            self.win.addstr(0, 0, ":")
+            for i in range(start_range, input_len):
+                if i + 1 == self.cursor_pos:
+                    self.win.addstr(
+                        0, i - start_range + 1, self.input[i], color_pair("cursor")
+                    )
+                else:
+                    self.win.addstr(0, i - start_range + 1, self.input[i])
+
+            if self.cursor_pos > input_len:
+                self.win.addstr(
+                    0, input_len - start_range + 1, " ", color_pair("cursor")
+                )
 
         self.win.refresh()
 
@@ -64,3 +75,6 @@ class Inputline:
         self.input = []
         self.cursor_pos = 1
         self.app.switch_mode("panel")
+
+    def get_input(self):
+        return "".join(self.input)

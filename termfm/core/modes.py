@@ -63,6 +63,8 @@ def panel_mode(keycode: int, app: App) -> None:
 def cmd_mode(keycode: int, app: App) -> None:
     if keycode == 27:
         app.switch_mode("panel")
+    elif keycode == 10:
+        debug(app.inputline.get_input())
     elif keycode == 263:
         app.inputline.remove_char()
     elif keycode == 260:
