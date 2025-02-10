@@ -18,7 +18,7 @@ class UiMap(TypedDict):
     lpanel: UiMapItem
     rpanel: UiMapItem
     statusline: UiMapItem
-    inputline: UiMapItem
+    cmdline: UiMapItem
 
 
 def init_ui(stdscr: curses.window) -> None:
@@ -52,8 +52,8 @@ def create_ui_map(stdscr) -> UiMap:
     height, width = stdscr.getmaxyx()
     half_width = width // 2
     statusline_height = 1
-    inputline = 1
-    panel_height = height - statusline_height - inputline
+    cmdline_height = 1
+    panel_height = height - statusline_height - cmdline_height
 
     ui_map: UiMap = {
         "lpanel": {
@@ -77,8 +77,8 @@ def create_ui_map(stdscr) -> UiMap:
             "begin_x": panel_height,
             "bkgd": "statusline",
         },
-        "inputline": {
-            "nlines": inputline,
+        "cmdline": {
+            "nlines": cmdline_height,
             "ncols": width,
             "begin_y": 0,
             "begin_x": panel_height + statusline_height,

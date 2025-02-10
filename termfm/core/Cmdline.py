@@ -7,9 +7,9 @@ from termfm.types import App
 from termfm.core.utils import debug
 
 
-class Inputline:
+class Cmdline:
     def __init__(self, app: App) -> None:
-        self.id: Literal["inputline"] = "inputline"
+        self.id: Literal["cmdline"] = "cmdline"
         self.app: App = app
         self.input: List[str] = []
         self.cursor_pos: int = 0
@@ -25,7 +25,7 @@ class Inputline:
 
     def render(self):
         self.win.clear()
-        if self.app.mode != "cmd":
+        if self.app.mode != "prompt":
             self.clear()
         else:
             start_range: int = 0
