@@ -1,4 +1,5 @@
 import curses
+import os
 
 from termfm.core.App import App
 from termfm.core.modes import modemap
@@ -6,6 +7,7 @@ from termfm.core.ui import init_ui
 
 
 def main() -> None:
+    os.environ.setdefault("ESCDELAY", "25")
     curses.wrapper(init)
 
 
@@ -16,7 +18,7 @@ def init(stdscr: curses.window) -> None:
     app.lpanel.render()
     app.rpanel.render()
     app.statusline.render()
-    app.cmdline.render()
+    app.inputline.render()
 
     run(app)
 

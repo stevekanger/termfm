@@ -4,14 +4,14 @@ if TYPE_CHECKING:
     from termfm.core.App import App as AppClass
     from termfm.core.Panel import Panel as PanelClass
     from termfm.core.Statusline import Statusline as StatuslineClass
-    from termfm.core.Cmdline import Cmdline as CmdlineClass
+    from termfm.core.Inputline import Inputline as InputlineClass
 
 App: TypeAlias = "AppClass"
 Panel: TypeAlias = "PanelClass"
 Statusline: TypeAlias = "StatuslineClass"
-Cmdline: TypeAlias = "CmdlineClass"
+Inputline: TypeAlias = "InputlineClass"
 
-UiWindows = Literal["lpanel", "rpanel", "statusline", "cmdline"]
+UiWindows = Literal["lpanel", "rpanel", "statusline", "inputline"]
 
 ColorPairs = Literal[
     "normal",
@@ -22,6 +22,7 @@ ColorPairs = Literal[
     "current",
     "icon_folder",
     "icon_file",
+    "cursor",
 ]
 
 ModeTypes = Literal["panel", "cmd", "statusline", "popup", "search"]

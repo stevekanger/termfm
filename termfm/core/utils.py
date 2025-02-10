@@ -4,11 +4,15 @@ import os
 import json
 
 
-def truncate_str(s, max_length):
+def truncate_str(s: str, max_length: int):
     return s[:max_length] if len(s) > max_length else s
 
 
-def truncate_with_ellipsis(s, max_length):
+def truncate_str_from_end(s: str, max_length: int):
+    return s[-max_length:] if len(s) > max_length else s
+
+
+def truncate_with_ellipsis(s: str, max_length: int):
     return (s[: max_length - 3] + "...") if len(s) > max_length else s
 
 

@@ -3,7 +3,7 @@ import curses
 from termfm.types import ModeTypes
 from termfm.core.Panel import Panel
 from termfm.core.Statusline import Statusline
-from termfm.core.Cmdline import Cmdline
+from termfm.core.Inputline import Inputline
 
 
 class App:
@@ -19,12 +19,12 @@ class App:
         self.lpanel: Panel = self.active_panel
         self.rpanel: Panel = Panel(self, "rpanel")
         self.statusline: Statusline = Statusline(self)
-        self.cmdline: Cmdline = Cmdline(self)
+        self.inputline: Inputline = Inputline(self)
 
     def switch_active_panel(self) -> None:
         self.active_panel = (
             self.lpanel if self.active_panel == self.rpanel else self.rpanel
         )
 
-    def set_mode(self, mode) -> None:
+    def switch_mode(self, mode) -> None:
         self.mode = mode

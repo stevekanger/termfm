@@ -14,26 +14,29 @@ class ModeMap(TypedDict):
 
 
 def panel_mode(keycode: int, app: App) -> None:
-    if keycode == 106:
+    if chr(keycode) == "j":
         app.active_panel.increase_current_idx()
-    elif keycode == 107:
+    elif chr(keycode) == "k":
         app.active_panel.decrease_current_idx()
-    elif keycode == 9:
+    elif chr(keycode) == "\t":
         app.switch_active_panel()
-    elif keycode == 104:
+    elif chr(keycode) == "h":
         app.active_panel.go_out()
-    elif keycode == 108:
+    elif chr(keycode) == "l":
         app.active_panel.go_in()
-    elif keycode == 113:
+    elif chr(keycode) == "q":
         app.exit_code = 1
+    elif chr(keycode) == ":":
+        app.switch_mode("cmd")
+        app.inputline.render()
     elif keycode == curses.KEY_RESIZE:
         app.stdscr.clear()
         app.stdscr.refresh()
         app.lpanel.resize()
         app.rpanel.resize()
         app.statusline.resize()
-        app.cmdline.resize()
-    elif keycode == 103:
+        app.inputline.resize()
+    elif chr(keycode) == 103:
         pass
     elif keycode == curses.KEY_MOUSE:
         mouse_event = curses.getmouse()
@@ -58,7 +61,18 @@ def panel_mode(keycode: int, app: App) -> None:
 
 
 def cmd_mode(keycode: int, app: App) -> None:
-    return
+    if keycode == 27:
+        app.switch_mode("panel")
+    elif keycode == 263:
+        app.inputline.remove_char()
+    elif keycode == 260:
+        app.inputline.decrease_cursor_pos()
+    elif keycode == 261:
+        app.inputline.increase_cursor_pos()
+    else:
+        app.inputline.add_char(chr(keycode))
+
+    app.inputline.render()
 
 
 def statusline_mode(keycode: int, app: App) -> None:

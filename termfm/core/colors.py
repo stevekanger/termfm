@@ -13,6 +13,7 @@ pairs = {
     "current": 6,
     "icon_folder": 7,
     "icon_file": 8,
+    "cursor": 9,
 }
 
 
@@ -31,6 +32,7 @@ def init_colors():
     curses.init_pair(pairs["current"], colors.WHITE, colors.STEELBLUE)
     curses.init_pair(pairs["icon_folder"], colors.LIGHTGOLDENROD5, colors.GREY0)
     curses.init_pair(pairs["icon_file"], colors.WHITE, colors.GREY0)
+    curses.init_pair(pairs["cursor"], colors.GREY0, colors.WHITE)
 
 
 class Colors:

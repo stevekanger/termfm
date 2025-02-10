@@ -1,9 +1,9 @@
 import curses
-from typing import Tuple, TypedDict
+from typing import TypedDict
 
-from termfm.core.utils import debug
-from termfm.types import App, ColorPairs, UiWindows, Panel, Cmdline, Statusline
+from termfm.types import ColorPairs, UiWindows
 from termfm.core.colors import init_colors, color_pair
+from termfm.core.utils import debug
 
 
 class UiMapItem(TypedDict):
@@ -18,7 +18,7 @@ class UiMap(TypedDict):
     lpanel: UiMapItem
     rpanel: UiMapItem
     statusline: UiMapItem
-    cmdline: UiMapItem
+    inputline: UiMapItem
 
 
 def init_ui(stdscr: curses.window) -> None:
@@ -52,8 +52,8 @@ def create_ui_map(stdscr) -> UiMap:
     height, width = stdscr.getmaxyx()
     half_width = width // 2
     statusline_height = 1
-    cmdline_height = 1
-    panel_height = height - statusline_height - cmdline_height
+    inputline = 1
+    panel_height = height - statusline_height - inputline
 
     ui_map: UiMap = {
         "lpanel": {
@@ -77,8 +77,8 @@ def create_ui_map(stdscr) -> UiMap:
             "begin_x": panel_height,
             "bkgd": "statusline",
         },
-        "cmdline": {
-            "nlines": cmdline_height,
+        "inputline": {
+            "nlines": inputline,
             "ncols": width,
             "begin_y": 0,
             "begin_x": panel_height + statusline_height,
