@@ -1,7 +1,7 @@
 import curses
 import os
 import subprocess
-from typing import List
+from typing import List, Tuple
 from pathlib import Path
 
 from termfm.core.ui import create_curses_win
@@ -29,6 +29,7 @@ class Panel:
         self.current_idx: int = 0
         self.scroll_offset: int = 0
         self.history: PanelHistory = []
+        self.padding: Tuple[int, int] = (1, 1)
 
     def is_active(self):
         return self.app.active_panel == self
@@ -40,8 +41,9 @@ class Panel:
     def render(self):
         self.win.clear()
         self.render_border()
-        self.render_panel_meta()
-        self.render_items()
+        self.render_panel_dir_name()
+        self.render_panel_item_count()
+        self.render_panel_items()
         self.win.refresh()
 
     def render_border(self):
@@ -52,17 +54,21 @@ class Panel:
         self.win.border()
         self.win.attroff(color)
 
-    def render_panel_meta(self):
-        height, width = self.win.getmaxyx()
+    def render_panel_dir_name(self):
+        _, width = self.win.getmaxyx()
         self.win.addstr(0, 2, truncate_with_ellipsis(self.dir, width - 4))
+
+    def render_panel_item_count(self):
+        height, width = self.win.getmaxyx()
         idx_str = "0" if not self.items_len else str(self.current_idx + 1)
         total_items = str(self.items_len)
         count_str = idx_str + "/" + total_items + " items"
         count_str_len = len(count_str)
+        y = height - 1
         x = (width - 2) - count_str_len
-        self.win.addstr(height - 1, x, count_str)
+        self.win.addstr(y, x, count_str)
 
-    def render_items(self):
+    def render_panel_items(self):
         height, width = self.win.getmaxyx()
         height = height - 2
         width = width - 4
@@ -85,16 +91,21 @@ class Panel:
         name = fill_empty_with_spaces(
             truncate_with_ellipsis(item["name"], max_len), max_len
         )
+        icon_width = 2
+        y = index + 1
+        x = icon_width + self.padding[1]
         if self.scroll_offset + index == self.current_idx and self.is_active():
-            self.win.addstr(index + 1, 3, name, color_pair("current"))
+            self.win.addstr(y, x, name, color_pair("current"))
         else:
-            self.win.addstr(index + 1, 3, name)
+            self.win.addstr(y, x, name)
 
     def render_item_icon(self, index: int, item: PanelItem):
+        y = index + 1
+        x = self.padding[1]
         if item["is_dir"]:
-            self.win.addstr(index + 1, 1, "\U0000f07b ", color_pair("icon_folder"))
+            self.win.addstr(y, x, "\U0000f07b ", color_pair("icon_folder"))
         else:
-            self.win.addstr(index + 1, 1, "\U0000f016 ", color_pair("icon_file"))
+            self.win.addstr(y, x, "\U0000f016 ", color_pair("icon_file"))
 
     def decrease_current_idx(self):
         self.current_idx = max(0, self.current_idx - 1)
