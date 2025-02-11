@@ -1,6 +1,5 @@
 import curses
 
-from termfm.core.utils import debug
 from termfm.types import ColorPairs
 
 

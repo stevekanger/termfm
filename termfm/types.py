@@ -1,10 +1,10 @@
 from typing import TYPE_CHECKING, List, Literal, Callable, TypeAlias, TypedDict
 
 if TYPE_CHECKING:
-    from termfm.core.App import App as AppClass
-    from termfm.core.Panel import Panel as PanelClass
-    from termfm.core.Statusline import Statusline as StatuslineClass
-    from termfm.core.Promptline import Promptline as PromptlineClass
+    from termfm.core.app import App as AppClass
+    from termfm.core.panels import Panel as PanelClass
+    from termfm.core.statusline import Statusline as StatuslineClass
+    from termfm.core.prompts import Promptline as PromptlineClass
 
 App: TypeAlias = "AppClass"
 Panel: TypeAlias = "PanelClass"
@@ -25,7 +25,7 @@ ColorPairs = Literal[
     "cursor",
 ]
 
-ModeTypes = Literal["panel", "input", "statusline", "search"]
+ModeTypes = Literal["panel", "prompt", "statusline"]
 
 ModeFn = Callable[[int, App], None]
 

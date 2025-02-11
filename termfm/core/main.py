@@ -1,7 +1,7 @@
 import curses
 import os
 
-from termfm.core.App import App
+from termfm.core.app import App
 from termfm.core.modes import modemap
 from termfm.core.ui import init_ui
 

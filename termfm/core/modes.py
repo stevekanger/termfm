@@ -7,10 +7,8 @@ from termfm.types import ModeFn, ModeTypes, App
 
 class ModeMap(TypedDict):
     panel: ModeFn
-    cmd: ModeFn
     statusline: ModeFn
-    popup: ModeFn
-    search: ModeFn
+    prompt: ModeFn
 
 
 def panel_mode(keycode: int, app: App) -> None:
@@ -27,7 +25,7 @@ def panel_mode(keycode: int, app: App) -> None:
     elif chr(keycode) == "q":
         app.exit_code = 1
     elif chr(keycode) == ":":
-        app.switch_mode("input")
+        app.switch_mode("prompt")
         app.promptline.render()
     elif keycode == curses.KEY_RESIZE:
         app.stdscr.clear()
@@ -60,19 +58,19 @@ def panel_mode(keycode: int, app: App) -> None:
     app.rpanel.render()
 
 
-def input_mode(keycode: int, app: App) -> None:
+def prompt_mode(keycode: int, app: App) -> None:
     if keycode == 27:
         app.switch_mode("panel")
     elif keycode == 10:
-        debug(app.promptline.get_input())
+        debug(app.promptline.input.get_text())
     elif keycode == 263:
-        app.promptline.remove_char()
+        app.promptline.input.remove_char()
     elif keycode == 260:
-        app.promptline.decrease_cursor_pos()
+        app.promptline.input.decrease_cursor_pos()
     elif keycode == 261:
-        app.promptline.increase_cursor_pos()
+        app.promptline.input.increase_cursor_pos()
     else:
-        app.promptline.add_char(chr(keycode))
+        app.promptline.input.add_char(chr(keycode))
 
     app.promptline.render()
 
@@ -81,13 +79,8 @@ def statusline_mode(keycode: int, app: App) -> None:
     return
 
 
-def search_mode(keycode: int, app: App) -> None:
-    return
-
-
-modemap: dict[ModeTypes, ModeFn] = {
+modemap: ModeMap = {
     "panel": panel_mode,
     "statusline": statusline_mode,
-    "search": search_mode,
-    "input": input_mode,
+    "prompt": prompt_mode,
 }

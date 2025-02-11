@@ -1,9 +1,9 @@
 import curses
 
 from termfm.types import ModeTypes
-from termfm.core.Panel import Panel
-from termfm.core.Statusline import Statusline
-from termfm.core.Promptline import Promptline
+from termfm.core.panels import Panel
+from termfm.core.statusline import Statusline
+from termfm.core.prompts import Promptline
 
 
 class App:
