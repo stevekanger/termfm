@@ -4,7 +4,9 @@ import subprocess
 from typing import List
 from pathlib import Path
 
-from termfm.core.ui import create_curses_win, create_ui_map
+from termfm.core.ui import create_curses_win
+from termfm.core.colors import color_pair
+from termfm.core.utils import truncate_with_ellipsis
 from termfm.types import (
     PanelHistoryState,
     PanelHistory,
@@ -13,8 +15,6 @@ from termfm.types import (
     PanelItem,
     App,
 )
-from termfm.core.colors import color_pair
-from termfm.core.utils import debug, truncate_with_ellipsis
 
 
 class Panel:
@@ -39,14 +39,22 @@ class Panel:
 
     def render(self):
         self.win.clear()
-        self.set_border()
+        self.render_border()
         self.render_panel_meta()
         self.render_items()
         self.win.refresh()
 
+    def render_border(self):
+        color = (
+            color_pair("borders_active") if self.is_active() else color_pair("borders")
+        )
+        self.win.attron(color)
+        self.win.border()
+        self.win.attroff(color)
+
     def render_panel_meta(self):
         height, width = self.win.getmaxyx()
-        self.win.addstr(0, 2, self.dir)
+        self.win.addstr(0, 2, truncate_with_ellipsis(self.dir, width - 4))
         idx_str = "0" if not self.items_len else str(self.current_idx + 1)
         total_items = str(self.items_len)
         count_str = idx_str + "/" + total_items + " items"
@@ -87,14 +95,6 @@ class Panel:
             self.win.addstr(index + 1, 1, "\U0000f07b ", color_pair("icon_folder"))
         else:
             self.win.addstr(index + 1, 1, "\U0000f016 ", color_pair("icon_file"))
-
-    def set_border(self):
-        color = (
-            color_pair("borders_active") if self.is_active() else color_pair("borders")
-        )
-        self.win.attron(color)
-        self.win.border()
-        self.win.attroff(color)
 
     def decrease_current_idx(self):
         self.current_idx = max(0, self.current_idx - 1)
@@ -170,9 +170,8 @@ class Panel:
         self.history.append(state)
 
 
-# Utility functions
+# Helper functions
 #
-# Helper functions for the class
 # These help with the class but don't modify any state
 def get_dir_content(dir) -> List[str]:
     try:

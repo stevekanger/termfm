@@ -27,15 +27,15 @@ def panel_mode(keycode: int, app: App) -> None:
     elif chr(keycode) == "q":
         app.exit_code = 1
     elif chr(keycode) == ":":
-        app.switch_mode("prompt")
-        app.cmdline.render()
+        app.switch_mode("input")
+        app.promptline.render()
     elif keycode == curses.KEY_RESIZE:
         app.stdscr.clear()
         app.stdscr.refresh()
         app.lpanel.resize()
         app.rpanel.resize()
         app.statusline.resize()
-        app.cmdline.resize()
+        app.promptline.resize()
     elif chr(keycode) == 103:
         pass
     elif keycode == curses.KEY_MOUSE:
@@ -60,21 +60,21 @@ def panel_mode(keycode: int, app: App) -> None:
     app.rpanel.render()
 
 
-def prompt_mode(keycode: int, app: App) -> None:
+def input_mode(keycode: int, app: App) -> None:
     if keycode == 27:
         app.switch_mode("panel")
     elif keycode == 10:
-        debug(app.cmdline.get_input())
+        debug(app.promptline.get_input())
     elif keycode == 263:
-        app.cmdline.remove_char()
+        app.promptline.remove_char()
     elif keycode == 260:
-        app.cmdline.decrease_cursor_pos()
+        app.promptline.decrease_cursor_pos()
     elif keycode == 261:
-        app.cmdline.increase_cursor_pos()
+        app.promptline.increase_cursor_pos()
     else:
-        app.cmdline.add_char(chr(keycode))
+        app.promptline.add_char(chr(keycode))
 
-    app.cmdline.render()
+    app.promptline.render()
 
 
 def statusline_mode(keycode: int, app: App) -> None:
@@ -89,5 +89,5 @@ modemap: dict[ModeTypes, ModeFn] = {
     "panel": panel_mode,
     "statusline": statusline_mode,
     "search": search_mode,
-    "prompt": prompt_mode,
+    "input": input_mode,
 }

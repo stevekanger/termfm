@@ -18,7 +18,7 @@ def init(stdscr: curses.window) -> None:
     app.lpanel.render()
     app.rpanel.render()
     app.statusline.render()
-    app.cmdline.render()
+    app.promptline.render()
 
     run(app)
 
