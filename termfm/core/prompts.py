@@ -29,6 +29,10 @@ class Promptline:
             self.win.refresh()
             return
 
+        self.render_input()
+        self.win.refresh()
+
+    def render_input(self):
         start_range: int = 0
         max_width = self.input_max_width()
 
@@ -52,8 +56,6 @@ class Promptline:
                 " ",
                 color_pair("cursor"),
             )
-
-        self.win.refresh()
 
 
 class ContextMenu:

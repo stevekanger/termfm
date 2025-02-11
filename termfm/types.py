@@ -11,7 +11,7 @@ Panel: TypeAlias = "PanelClass"
 Statusline: TypeAlias = "StatuslineClass"
 Promptline: TypeAlias = "PromptlineClass"
 
-UiWindows = Literal["lpanel", "rpanel", "statusline", "promptline"]
+UiElementId = Literal["lpanel", "rpanel", "statusline", "promptline"]
 
 ColorPairs = Literal[
     "normal",

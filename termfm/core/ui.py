@@ -1,9 +1,8 @@
 import curses
 from typing import TypedDict
 
-from termfm.types import ColorPairs, UiWindows
+from termfm.types import ColorPairs, UiElementId
 from termfm.core.colors import init_colors, color_pair
-from termfm.core.utils import debug
 
 
 class UiMapItem(TypedDict):
@@ -31,7 +30,7 @@ def init_ui(stdscr: curses.window) -> None:
     curses.mousemask(curses.ALL_MOUSE_EVENTS | curses.REPORT_MOUSE_POSITION)
 
 
-def create_curses_win(stdscr: curses.window, id: UiWindows) -> curses.window:
+def create_curses_win(stdscr: curses.window, id: UiElementId) -> curses.window:
     mapped_item = create_ui_map(stdscr)[id]
     nlines, ncols, begin_y, begin_x, bkgd = (
         mapped_item["nlines"],
