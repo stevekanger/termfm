@@ -2,6 +2,7 @@ import argparse
 import inspect
 import os
 import json
+import threading
 
 
 def truncate_str(s: str, max_length: int):
@@ -26,6 +27,19 @@ def create_args():
     return args
 
 
+def debounce(func, delay=0.2):
+    timer = None
+
+    def debounced(*args, **kwargs):
+        nonlocal timer
+        if timer:
+            timer.cancel()
+        timer = threading.Timer(delay, func, args, kwargs)
+        timer.start()
+
+    return debounced
+
+
 def debug(*items):
     logFile = os.path.join(os.getcwd(), "debug.log")
     frame = inspect.currentframe()
@@ -46,14 +60,21 @@ def debug(*items):
         debugFile.write("\n")
 
 
+# A little help  from chatgpt for this one
 def log_item_serialize(obj, seen=None):
     if seen is None:
         seen = set()  # Prevent infinite recursion on cyclic references
 
     if isinstance(obj, (int, float, str, bool, type(None))):
         return obj
-    if isinstance(obj, (list, dict)):
-        return obj
+    if isinstance(obj, list):
+        return [
+            log_item_serialize(item, seen) for item in obj
+        ]  # Recursively serialize lists
+    if isinstance(obj, dict):
+        return {
+            key: log_item_serialize(value, seen) for key, value in obj.items()
+        }  # Serialize dict values
     if hasattr(obj, "__dict__") or hasattr(obj, "__class__"):
         if id(obj) in seen:
             return f"<Circular Reference: {obj.__class__.__name__}>"
